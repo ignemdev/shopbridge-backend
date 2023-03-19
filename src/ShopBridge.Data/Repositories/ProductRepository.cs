@@ -13,7 +13,9 @@ public class ProductRepository : Repository<Product>, IProductRepository
         if (product == default)
             throw new ArgumentNullException(nameof(product));
 
-        var dbProduct = await _db.Products.FirstOrDefaultAsync(p => p.Id == product.Id);
+        var dbProduct = await _db.Products
+            .Include(p => p.Categories)
+            .FirstOrDefaultAsync(p => p.Id == product.Id);
 
         if (dbProduct != default)
         {

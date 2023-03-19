@@ -1,4 +1,7 @@
-﻿namespace ShopBridge.Api
+﻿using ShopBridge.Core;
+using ShopBridge.Data;
+
+namespace ShopBridge.Api
 {
     public class Startup
     {
@@ -13,13 +16,22 @@
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            #region configutations
+            #region configurations
             services.AddDbContextConfiguration(Configuration);
 
-            services.AddControllers();
+            services.AddCors();
+
+            services
+                .AddControllers()
+                .AddJsonConfigurations();
+
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             #endregion
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddEntitiesServices();
+            services.AddAutoMapper(typeof(Startup));
         }
         /// <summary>
         /// Donde se configuran los middlewares y el request pipeline

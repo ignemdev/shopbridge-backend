@@ -14,7 +14,9 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
         if (category == default)
             throw new ArgumentNullException(nameof(category));
 
-        var dbCategory = await _db.Categories.FirstOrDefaultAsync(c => c.Id == category.Id);
+        var dbCategory = await _db.Categories
+            .Include(c => c.Products)
+            .FirstOrDefaultAsync(c => c.Id == category.Id);
 
         if (dbCategory != default)
         {
