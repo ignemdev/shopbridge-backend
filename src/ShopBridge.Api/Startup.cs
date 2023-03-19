@@ -13,9 +13,13 @@
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            #region configutations
+            services.AddDbContextConfiguration(Configuration);
+
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            #endregion
         }
         /// <summary>
         /// Donde se configuran los middlewares y el request pipeline
