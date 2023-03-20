@@ -11,13 +11,35 @@ namespace ShopBridge.Api.Controllers;
 [Route("api/category")]
 public class CategoryController : ControllerBase
 {
-    private readonly IMapper _mapper;
     private readonly ICategoryServices _categoryServices;
-
+    private readonly IMapper _mapper;
     public CategoryController(IMapper mapper, ICategoryServices categoryServices)
     {
         _mapper = mapper;
         _categoryServices = categoryServices;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<ResponseModel<CategoryDetailDto>>> AddCategory([FromBody] CategoryAddDto categoryAdd)
+    {
+        var response = new ResponseModel<CategoryDetailDto>();
+
+        try
+        {
+            var category = _mapper.Map<Category>(categoryAdd);
+            var addedCategory = await _categoryServices.AddCategoryAsync(category);
+            response.SetData(_mapper.Map<CategoryDetailDto>(addedCategory));
+
+            if (response.Data == default)
+                return NotFound();
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            response.SetErrorMessage((ex.InnerException ?? ex).Message);
+            return BadRequest(response);
+        }
     }
 
     [HttpGet]
@@ -63,17 +85,15 @@ public class CategoryController : ControllerBase
             return BadRequest(response);
         }
     }
-
-    [HttpPost]
-    public async Task<ActionResult<ResponseModel<CategoryDetailDto>>> AddCategory([FromBody] CategoryAddDto categoryAdd)
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<ResponseModel<CategoryDetailDto>>> RemoveCategoryById(int id)
     {
         var response = new ResponseModel<CategoryDetailDto>();
 
         try
         {
-            var category = _mapper.Map<Category>(categoryAdd);
-            var addedCategory = await _categoryServices.AddCategoryAsync(category);
-            response.SetData(_mapper.Map<CategoryDetailDto>(addedCategory));
+            var deletedCategory = await _categoryServices.RemoveCategoryByIdAsync(id);
+            response.SetData(_mapper.Map<CategoryDetailDto>(deletedCategory));
 
             if (response.Data == default)
                 return NotFound();
@@ -97,29 +117,6 @@ public class CategoryController : ControllerBase
             var category = _mapper.Map<Category>(categoryUpdate);
             var updatedCategory = await _categoryServices.UpdateCategoryAsync(category);
             response.SetData(_mapper.Map<CategoryDetailDto>(updatedCategory));
-
-            if (response.Data == default)
-                return NotFound();
-
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            response.SetErrorMessage((ex.InnerException ?? ex).Message);
-            return BadRequest(response);
-        }
-    }
-
-
-    [HttpDelete("{id:int}")]
-    public async Task<ActionResult<ResponseModel<CategoryDetailDto>>> RemoveCategoryById(int id)
-    {
-        var response = new ResponseModel<CategoryDetailDto>();
-
-        try
-        {
-            var deletedCategory = await _categoryServices.RemoveCategoryByIdAsync(id);
-            response.SetData(_mapper.Map<CategoryDetailDto>(deletedCategory));
 
             if (response.Data == default)
                 return NotFound();
