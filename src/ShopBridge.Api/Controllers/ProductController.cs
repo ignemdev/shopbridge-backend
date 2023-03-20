@@ -130,4 +130,26 @@ public class ProductController : ControllerBase
             return BadRequest(response);
         }
     }
+
+    [HttpPost("{id:int}/categories")]
+    public async Task<ActionResult<ResponseModel<ProductDetailDto>>> AddProductCategories(int id, [FromBody] IEnumerable<int> categoriesIds)
+    {
+        var response = new ResponseModel<ProductDetailDto>();
+
+        try
+        {
+            var product = await _productServices.AddProductCategoriesAsync(id, categoriesIds);
+            response.SetData(_mapper.Map<ProductDetailDto>(product));
+
+            if (response.Data == default)
+                return NotFound();
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            response.SetErrorMessage((ex.InnerException ?? ex).Message);
+            return BadRequest(response);
+        }
+    }
 }

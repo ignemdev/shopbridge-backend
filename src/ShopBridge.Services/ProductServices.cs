@@ -17,9 +17,38 @@ public class ProductServices : IProductServices
         var addedProduct = await _unitOfWork.Product.AddAsync(product);
         await _unitOfWork.SaveAsync();
 
-        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == addedProduct.Id, "Categories");
+        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == addedProduct.Id, DatabaseConstants.CategoriesName);
 
         return dbProduct;
+    }
+
+    public async Task<Product> AddProductCategoriesAsync(int id, IEnumerable<int> categoriesIds)
+    {
+        if (id <= 0)
+            throw new ArgumentOutOfRangeException(nameof(id));
+
+        if (!(categoriesIds?.Any() ?? default))
+            throw new ArgumentNullException(nameof(categoriesIds));
+
+        var dbProduct = await _unitOfWork.Product.GetByIdAsync(id);
+
+        if (dbProduct == default)
+            throw new InvalidOperationException(nameof(dbProduct));
+
+        var dbCategories = await _unitOfWork.Category.GetAllAsync(c => categoriesIds.Contains(c.Id));
+
+        if (dbCategories.Any())
+        {
+            dbCategories
+                .ToList()
+                .ForEach(dbProduct.Categories.Add);
+        }
+
+        await _unitOfWork.SaveAsync();
+
+        var updatedProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, DatabaseConstants.CategoriesName);
+
+        return updatedProduct;
     }
 
     public async Task<IEnumerable<Product>> GetAllProductsAsync()
@@ -33,7 +62,7 @@ public class ProductServices : IProductServices
         if (id <= 0)
             throw new ArgumentOutOfRangeException(nameof(id));
 
-        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, "Categories");
+        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, DatabaseConstants.CategoriesName);
 
         if (dbProduct == default)
             throw new NullReferenceException(nameof(dbProduct));
@@ -46,7 +75,7 @@ public class ProductServices : IProductServices
         if (id <= 0)
             throw new ArgumentOutOfRangeException(nameof(id));
 
-        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, "Categories");
+        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, DatabaseConstants.CategoriesName);
 
         if (dbProduct == default)
             throw new NullReferenceException(nameof(dbProduct));

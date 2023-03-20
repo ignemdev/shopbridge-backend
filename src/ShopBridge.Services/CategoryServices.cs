@@ -17,7 +17,7 @@ public class CategoryServices : ICategoryServices
         var addedCategory = await _unitOfWork.Category.AddAsync(category);
         await _unitOfWork.SaveAsync();
 
-        var dbCategory = await _unitOfWork.Category.GetFirstOrDefaultAsync(c => c.Id == addedCategory.Id, "Products");
+        var dbCategory = await _unitOfWork.Category.GetFirstOrDefaultAsync(c => c.Id == addedCategory.Id, DatabaseConstants.ProductsName);
 
         return dbCategory;
     }
@@ -33,7 +33,7 @@ public class CategoryServices : ICategoryServices
         if (id <= 0)
             throw new ArgumentOutOfRangeException(nameof(id));
 
-        var dbCategory = await _unitOfWork.Category.GetFirstOrDefaultAsync(c => c.Id == id, "Products");
+        var dbCategory = await _unitOfWork.Category.GetFirstOrDefaultAsync(c => c.Id == id, DatabaseConstants.ProductsName);
 
         if (dbCategory == default)
             throw new NullReferenceException(nameof(dbCategory));
@@ -46,7 +46,7 @@ public class CategoryServices : ICategoryServices
         if (id <= 0)
             throw new ArgumentOutOfRangeException(nameof(id));
 
-        var dbCategory = await _unitOfWork.Category.GetFirstOrDefaultAsync(c => c.Id == id, "Products");
+        var dbCategory = await _unitOfWork.Category.GetFirstOrDefaultAsync(c => c.Id == id, DatabaseConstants.ProductsName);
 
         if (dbCategory == default)
             throw new NullReferenceException(nameof(dbCategory));

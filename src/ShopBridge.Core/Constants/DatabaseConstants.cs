@@ -6,6 +6,8 @@ public static class DatabaseConstants
     public const string ProductsCategoriesName = "ProductsCategories";
     public const string ProductIdName = "ProductId";
     public const string CategoryIdName = "CategoryId";
+    public const string CategoriesName = "Categories";
+    public const string ProductsName = "Products";
     #endregion
 
     #region column types
