@@ -6,6 +6,6 @@ public interface IProductServices
     Task<Product> AddProductAsync(Product product);
     Task<IEnumerable<Product>> GetAllProductsAsync();
     Task<Product> GetProductByIdAsync(int id);
-    Task<Product> RemoveProductById(int id);
-    Task<Product> UpdateProduct(Product product);
+    Task<Product> RemoveProductByIdAsync(int id);
+    Task<Product> UpdateProductAsync(Product product);
 }

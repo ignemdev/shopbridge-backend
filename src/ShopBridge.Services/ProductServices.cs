@@ -41,7 +41,7 @@ public class ProductServices : IProductServices
         return dbProduct;
     }
 
-    public async Task<Product> RemoveProductById(int id)
+    public async Task<Product> RemoveProductByIdAsync(int id)
     {
         if (id <= 0)
             throw new ArgumentOutOfRangeException(nameof(id));
@@ -57,7 +57,7 @@ public class ProductServices : IProductServices
         return dbProduct;
     }
 
-    public async Task<Product> UpdateProduct(Product product)
+    public async Task<Product> UpdateProductAsync(Product product)
     {
         if (product == default)
             throw new ArgumentNullException(nameof(product));

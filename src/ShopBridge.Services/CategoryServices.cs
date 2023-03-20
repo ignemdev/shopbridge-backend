@@ -41,7 +41,7 @@ public class CategoryServices : ICategoryServices
         return dbCategory;
     }
 
-    public async Task<Category> RemoveCategoryById(int id)
+    public async Task<Category> RemoveCategoryByIdAsync(int id)
     {
         if (id <= 0)
             throw new ArgumentOutOfRangeException(nameof(id));
@@ -57,7 +57,7 @@ public class CategoryServices : ICategoryServices
         return dbCategory;
     }
 
-    public async Task<Category> UpdateCategory(Category category)
+    public async Task<Category> UpdateCategoryAsync(Category category)
     {
         if (category == default)
             throw new ArgumentNullException(nameof(category));
