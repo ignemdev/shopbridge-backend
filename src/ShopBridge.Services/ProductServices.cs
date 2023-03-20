@@ -30,7 +30,7 @@ public class ProductServices : IProductServices
         if (!(categoriesIds?.Any() ?? default))
             throw new ArgumentNullException(nameof(categoriesIds));
 
-        var dbProduct = await _unitOfWork.Product.GetByIdAsync(id);
+        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, DatabaseConstants.CategoriesName);
 
         if (dbProduct == default)
             throw new InvalidOperationException(nameof(dbProduct));
@@ -46,7 +46,20 @@ public class ProductServices : IProductServices
 
         await _unitOfWork.SaveAsync();
 
-        var updatedProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, DatabaseConstants.CategoriesName);
+        return dbProduct;
+    }
+
+    public async Task<Product> AddProductStockAsync(Product product)
+    {
+        if (product == default || product is Product { Stock: <= 0 })
+            throw new ArgumentOutOfRangeException(nameof(product));
+
+        var updatedProduct = await _unitOfWork.Product.UpdateStockAsync(product.Id, product.Stock);
+
+        if (updatedProduct == default)
+            throw new NullReferenceException(nameof(updatedProduct));
+
+        await _unitOfWork.SaveAsync();
 
         return updatedProduct;
     }
@@ -68,6 +81,34 @@ public class ProductServices : IProductServices
             throw new NullReferenceException(nameof(dbProduct));
 
         return dbProduct;
+    }
+
+    public async Task<Product> ReduceProductStockAsync(Product product)
+    {
+        if (product == default || product is Product { Stock: <= 0 })
+            throw new ArgumentOutOfRangeException(nameof(product));
+
+        var productId = product.Id;
+        var reduceQuantity = product.Stock;
+
+        var dbProduct = await _unitOfWork.Product.GetByIdAsync(productId);
+
+        if (dbProduct is Product { Stock: <= 0 })
+            throw new InvalidOperationException(nameof(dbProduct));
+
+        var insufficientStock = (dbProduct.Stock - reduceQuantity) < 0;
+
+        if (insufficientStock)
+            throw new InvalidOperationException(nameof(reduceQuantity));
+
+        var updatedProduct = await _unitOfWork.Product.UpdateStockAsync(productId, -reduceQuantity);
+
+        if (updatedProduct == default)
+            throw new NullReferenceException(nameof(updatedProduct));
+
+        await _unitOfWork.SaveAsync();
+
+        return updatedProduct;
     }
 
     public async Task<Product> RemoveProductByIdAsync(int id)

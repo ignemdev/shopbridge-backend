@@ -26,4 +26,16 @@ public class ProductRepository : Repository<Product>, IProductRepository
 
         return dbProduct!;
     }
+
+    public async Task<Product> UpdateStockAsync(int id, int stock)
+    {
+        var dbProduct = await _db.Products
+            .Include(p => p.Categories)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (dbProduct != default)
+            dbProduct.Stock += stock;
+
+        return dbProduct!;
+    }
 }

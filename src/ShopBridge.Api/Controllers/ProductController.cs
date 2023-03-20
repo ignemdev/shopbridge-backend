@@ -152,4 +152,50 @@ public class ProductController : ControllerBase
             return BadRequest(response);
         }
     }
+
+    [HttpPut("addstock")]
+    public async Task<ActionResult<ResponseModel<ProductDetailDto>>> AddProductStock([FromBody] ProductStockUpdateDto productStockUpdate)
+    {
+        var response = new ResponseModel<ProductDetailDto>();
+
+        try
+        {
+            var product = _mapper.Map<Product>(productStockUpdate);
+            var updatedProduct = await _productServices.AddProductStockAsync(product);
+            response.SetData(_mapper.Map<ProductDetailDto>(updatedProduct));
+
+            if (response.Data == default)
+                return NotFound();
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            response.SetErrorMessage((ex.InnerException ?? ex).Message);
+            return BadRequest(response);
+        }
+    }
+
+    [HttpPut("reducestock")]
+    public async Task<ActionResult<ResponseModel<ProductDetailDto>>> ReduceProductStock([FromBody] ProductStockUpdateDto productStockUpdate)
+    {
+        var response = new ResponseModel<ProductDetailDto>();
+
+        try
+        {
+            var product = _mapper.Map<Product>(productStockUpdate);
+            var updatedProduct = await _productServices.ReduceProductStockAsync(product);
+            response.SetData(_mapper.Map<ProductDetailDto>(updatedProduct));
+
+            if (response.Data == default)
+                return NotFound();
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            response.SetErrorMessage((ex.InnerException ?? ex).Message);
+            return BadRequest(response);
+        }
+    }
 }
