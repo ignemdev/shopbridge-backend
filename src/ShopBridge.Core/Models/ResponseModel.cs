@@ -1,18 +1,42 @@
-﻿namespace ShopBridge.Core.Models;
-public class ResponseModel<TModel> where TModel : class
+﻿namespace ShopBridge.Core.Models
 {
-    public TModel Data { get; set; } = default!;
-    public string ErrorMessage { get; private set; } = null!;
-    public bool HasError { get; private set; }
-    public void SetData(TModel data)
+    public class ResponseModel<TData>
+        where TData : class
     {
-        if (data != default)
-            Data = data;
+        public TData Data { get; set; } = null!;
+        public string ErrorMessage { get; private set; } = null!;
+        public bool HasError { get; protected set; }
+        public void SetData(TData data)
+        {
+            if (data != default)
+                Data = data;
+        }
+
+        public void SetErrorMessage(string message)
+        {
+            ErrorMessage = message;
+            HasError = true;
+        }
     }
 
-    public void SetErrorMessage(string message)
+    public class ResponseModel<TData, TError> : ResponseModel<TData>
+        where TData : class
+        where TError : class
     {
-        ErrorMessage = message;
-        HasError = true;
+        public ResponseModel()
+        {
+            ValidationErrors = new List<TError>();
+        }
+
+        public List<TError> ValidationErrors { get; private set; }
+
+        public void SetValidationErrors(List<TError> validationErrors)
+        {
+            if (validationErrors?.Any() ?? default)
+            {
+                HasError = true;
+                ValidationErrors.AddRange(validationErrors);
+            }
+        }
     }
 }

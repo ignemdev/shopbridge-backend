@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using ShopBridge.Api.Validators;
 using ShopBridge.Core.DTOs.Category;
 using ShopBridge.Core.Entities;
 using ShopBridge.Core.Models;
@@ -22,7 +24,15 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ResponseModel<CategoryDetailDto>>> AddCategory([FromBody] CategoryAddDto categoryAdd)
     {
-        var response = new ResponseModel<CategoryDetailDto>();
+        var response = new ResponseModel<CategoryDetailDto, ValidationFailure>();
+        var validator = new BaseAddDtoValidator();
+        var validationResult = await validator.ValidateAsync(categoryAdd);
+
+        if (!validationResult.IsValid)
+        {
+            response.SetValidationErrors(validationResult.Errors);
+            return BadRequest(response);
+        }
 
         try
         {
@@ -110,7 +120,15 @@ public class CategoryController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<ResponseModel<CategoryDetailDto>>> UpdateCategory([FromBody] CategoryUpdateDto categoryUpdate)
     {
-        var response = new ResponseModel<CategoryDetailDto>();
+        var response = new ResponseModel<CategoryDetailDto, ValidationFailure>();
+        var validator = new BaseDtoValidator();
+        var validationResult = await validator.ValidateAsync(categoryUpdate);
+
+        if (!validationResult.IsValid)
+        {
+            response.SetValidationErrors(validationResult.Errors);
+            return BadRequest(response);
+        }
 
         try
         {

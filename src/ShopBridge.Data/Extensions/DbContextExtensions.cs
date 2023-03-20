@@ -8,7 +8,7 @@ public static class DbContextExtensions
 {
     public static IServiceCollection AddDbContextConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<ShopBridgeContext>(options => options.UseSqlServer(configuration.GetConnectionString(DatabaseConstants.DefaultDbContextName)));
+        services.AddDbContext<ShopBridgeContext>(options => options.UseSqlServer(configuration.GetConnectionString(GlobalConstants.DefaultDbContextName)));
 
         return services;
     }

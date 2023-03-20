@@ -1,5 +1,5 @@
 ﻿namespace System;
-public static class DatabaseConstants
+public static class GlobalConstants
 {
     #region names
     public const string DefaultDbContextName = "ShopBridgeContext";
@@ -16,7 +16,8 @@ public static class DatabaseConstants
     #endregion
 
     #region values
-    public const int ZeroValue = 0;
+    public const int ValueZero = 0;
+    public const int ValueOne = 1;
     #endregion
 
     #region constraints

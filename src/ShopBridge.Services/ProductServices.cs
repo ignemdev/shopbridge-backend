@@ -17,7 +17,7 @@ public class ProductServices : IProductServices
         var addedProduct = await _unitOfWork.Product.AddAsync(product);
         await _unitOfWork.SaveAsync();
 
-        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == addedProduct.Id, DatabaseConstants.CategoriesName);
+        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == addedProduct.Id, GlobalConstants.CategoriesName);
 
         return dbProduct;
     }
@@ -30,7 +30,7 @@ public class ProductServices : IProductServices
         if (!(categoriesIds?.Any() ?? default))
             throw new ArgumentNullException(nameof(categoriesIds));
 
-        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, DatabaseConstants.CategoriesName);
+        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, GlobalConstants.CategoriesName);
 
         if (dbProduct == default)
             throw new InvalidOperationException(nameof(dbProduct));
@@ -75,7 +75,7 @@ public class ProductServices : IProductServices
         if (id <= 0)
             throw new ArgumentOutOfRangeException(nameof(id));
 
-        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, DatabaseConstants.CategoriesName);
+        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, GlobalConstants.CategoriesName);
 
         if (dbProduct == default)
             throw new NullReferenceException(nameof(dbProduct));
@@ -116,7 +116,7 @@ public class ProductServices : IProductServices
         if (id <= 0)
             throw new ArgumentOutOfRangeException(nameof(id));
 
-        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, DatabaseConstants.CategoriesName);
+        var dbProduct = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == id, GlobalConstants.CategoriesName);
 
         if (dbProduct == default)
             throw new NullReferenceException(nameof(dbProduct));

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using ShopBridge.Api.Validators.Product;
 using ShopBridge.Core.DTOs.Product;
 using ShopBridge.Core.Entities;
 using ShopBridge.Core.Models;
@@ -23,7 +25,15 @@ public class ProductController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ResponseModel<ProductDetailDto>>> AddProduct([FromBody] ProductAddDto productAdd)
     {
-        var response = new ResponseModel<ProductDetailDto>();
+        var response = new ResponseModel<ProductDetailDto, ValidationFailure>();
+        var validator = new ProductAddDtoValidator();
+        var validationResult = await validator.ValidateAsync(productAdd);
+
+        if (!validationResult.IsValid)
+        {
+            response.SetValidationErrors(validationResult.Errors);
+            return BadRequest(response);
+        }
 
         try
         {
@@ -111,7 +121,15 @@ public class ProductController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<ResponseModel<ProductDetailDto>>> UpdateProduct([FromBody] ProductUpdateDto productUpdate)
     {
-        var response = new ResponseModel<ProductDetailDto>();
+        var response = new ResponseModel<ProductDetailDto, ValidationFailure>();
+        var validator = new ProductUpdateDtoValidator();
+        var validationResult = await validator.ValidateAsync(productUpdate);
+
+        if (!validationResult.IsValid)
+        {
+            response.SetValidationErrors(validationResult.Errors);
+            return BadRequest(response);
+        }
 
         try
         {
@@ -156,7 +174,15 @@ public class ProductController : ControllerBase
     [HttpPut("addstock")]
     public async Task<ActionResult<ResponseModel<ProductDetailDto>>> AddProductStock([FromBody] ProductStockUpdateDto productStockUpdate)
     {
-        var response = new ResponseModel<ProductDetailDto>();
+        var response = new ResponseModel<ProductDetailDto, ValidationFailure>();
+        var validator = new ProductStockUpdateDtoValidator();
+        var validationResult = await validator.ValidateAsync(productStockUpdate);
+
+        if (!validationResult.IsValid)
+        {
+            response.SetValidationErrors(validationResult.Errors);
+            return BadRequest(response);
+        }
 
         try
         {
@@ -179,7 +205,15 @@ public class ProductController : ControllerBase
     [HttpPut("reducestock")]
     public async Task<ActionResult<ResponseModel<ProductDetailDto>>> ReduceProductStock([FromBody] ProductStockUpdateDto productStockUpdate)
     {
-        var response = new ResponseModel<ProductDetailDto>();
+        var response = new ResponseModel<ProductDetailDto, ValidationFailure>();
+        var validator = new ProductStockUpdateDtoValidator();
+        var validationResult = await validator.ValidateAsync(productStockUpdate);
+
+        if (!validationResult.IsValid)
+        {
+            response.SetValidationErrors(validationResult.Errors);
+            return BadRequest(response);
+        }
 
         try
         {

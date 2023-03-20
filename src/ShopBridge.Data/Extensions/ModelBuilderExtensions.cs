@@ -9,41 +9,41 @@ public static class ModelBuilderExtensions
         modelBuilder.Entity<Product>(entity =>
         {
             entity.Property(p => p.Stock)
-                .HasDefaultValue(DatabaseConstants.ZeroValue)
+                .HasDefaultValue(GlobalConstants.ValueZero)
                 .IsRequired();
 
             entity.Property(p => p.Price)
-                .HasDefaultValue(DatabaseConstants.ZeroValue)
+                .HasDefaultValue(GlobalConstants.ValueZero)
                 .IsRequired();
 
             entity.ToTable(t =>
             {
-                t.HasCheckConstraint(DatabaseConstants.CKProductStockName, DatabaseConstants.CKProductStock);
-                t.HasCheckConstraint(DatabaseConstants.CKProductPriceName, DatabaseConstants.CKProductPrice);
+                t.HasCheckConstraint(GlobalConstants.CKProductStockName, GlobalConstants.CKProductStock);
+                t.HasCheckConstraint(GlobalConstants.CKProductPriceName, GlobalConstants.CKProductPrice);
             });
 
             entity
                 .HasMany(c => c.Categories)
                 .WithMany(p => p.Products)
                 .UsingEntity<Dictionary<string, object>>(
-                    DatabaseConstants.ProductsCategoriesName,
-                    c => c.HasOne<Category>().WithMany().HasForeignKey(DatabaseConstants.CategoryIdName).OnDelete(DeleteBehavior.ClientSetNull),
-                    p => p.HasOne<Product>().WithMany().HasForeignKey(DatabaseConstants.ProductIdName).OnDelete(DeleteBehavior.ClientSetNull),
+                    GlobalConstants.ProductsCategoriesName,
+                    c => c.HasOne<Category>().WithMany().HasForeignKey(GlobalConstants.CategoryIdName).OnDelete(DeleteBehavior.ClientSetNull),
+                    p => p.HasOne<Product>().WithMany().HasForeignKey(GlobalConstants.ProductIdName).OnDelete(DeleteBehavior.ClientSetNull),
                     j =>
                     {
-                        j.HasKey(DatabaseConstants.ProductIdName, DatabaseConstants.CategoryIdName);
-                        j.ToTable(DatabaseConstants.ProductsCategoriesName);
+                        j.HasKey(GlobalConstants.ProductIdName, GlobalConstants.CategoryIdName);
+                        j.ToTable(GlobalConstants.ProductsCategoriesName);
                     }
                 );
 
-        }).AddBaseEntityMapping<Product>(DatabaseConstants.DefaultMediumStringMaxLength, DatabaseConstants.DefaultLargeStringMaxLength);
+        }).AddBaseEntityMapping<Product>(GlobalConstants.DefaultMediumStringMaxLength, GlobalConstants.DefaultLargeStringMaxLength);
 
         return modelBuilder;
     }
 
     public static ModelBuilder AddCategoryMapping(this ModelBuilder modelBuilder)
     {
-        modelBuilder.AddBaseEntityMapping<Category>(DatabaseConstants.DefaultMediumStringMaxLength, DatabaseConstants.DefaultLargeStringMaxLength);
+        modelBuilder.AddBaseEntityMapping<Category>(GlobalConstants.DefaultMediumStringMaxLength, GlobalConstants.DefaultLargeStringMaxLength);
 
         return modelBuilder;
     }
@@ -81,12 +81,12 @@ public static class ModelBuilderExtensions
 
             entity.Property(b => b.CreatedAt)
                 .IsRequired()
-                .HasColumnType(DatabaseConstants.DatetimeColumnTypeName)
-                .HasDefaultValueSql(DatabaseConstants.GetDateSqlFunction);
+                .HasColumnType(GlobalConstants.DatetimeColumnTypeName)
+                .HasDefaultValueSql(GlobalConstants.GetDateSqlFunction);
 
             entity.Property(b => b.UpdatedAt)
                 .IsRequired(false)
-                .HasColumnType(DatabaseConstants.DatetimeColumnTypeName);
+                .HasColumnType(GlobalConstants.DatetimeColumnTypeName);
         });
 
         return modelBuilder;
